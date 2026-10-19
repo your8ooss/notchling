@@ -1,0 +1,47 @@
+#!/bin/bash
+# Установка Notchling одной командой:  curl -fsSL <адрес сайта>/ins | bash
+# Скачивает Notchling.zip, кладёт приложение в «Программы» и открывает его.
+# Файл, скачанный через curl, не получает «карантин», поэтому macOS не показывает предупреждений.
+set -euo pipefail
+
+BASE="${NOTCHLING_URL:-https://your8ooss.github.io/notchling}"
+DEST="${NOTCHLING_DEST:-/Applications}"
+
+say() { printf '%s\n' "$*"; }
+die() { printf 'Ошибка: %s\n' "$*" >&2; exit 1; }
+
+[ "$(uname -s)" = Darwin ] || die "Notchling работает только на macOS."
+major="$(sw_vers -productVersion | cut -d. -f1)"
+[ "$major" -ge 14 ] || die "нужна macOS 14 или новее (сейчас $(sw_vers -productVersion))."
+case "$BASE" in __BASE_URL__) die "адрес сайта не задан.";; esac
+
+# Нет прав на «Программы» — ставим в ~/Applications.
+if [ ! -w "$DEST" ]; then
+  DEST="$HOME/Applications"
+  mkdir -p "$DEST"
+fi
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+say "Скачиваю Notchling…"
+curl -fSL --progress-bar "$BASE/Notchling.zip" -o "$tmp/Notchling.zip" || die "не удалось скачать $BASE/Notchling.zip"
+ditto -x -k "$tmp/Notchling.zip" "$tmp/x" || die "архив повреждён."
+[ -d "$tmp/x/Notchling.app" ] || die "в архиве нет Notchling.app."
+
+# Если приложение уже запущено, закрываем его перед заменой.
+if pgrep -x Notchling >/dev/null 2>&1; then
+  say "Закрываю запущенный Notchling…"
+  pkill -x Notchling || true
+  sleep 1
+fi
+
+rm -rf "$DEST/Notchling.app"
+ditto "$tmp/x/Notchling.app" "$DEST/Notchling.app"
+xattr -dr com.apple.quarantine "$DEST/Notchling.app" 2>/dev/null || true
+
+say "Готово: $DEST/Notchling.app"
+if [ -z "${NOTCHLING_NO_OPEN:-}" ]; then
+  open "$DEST/Notchling.app"
+  say "Notchling запущен. Дальше: значок в строке меню → «Подключить хуки…»."
+fi

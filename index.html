@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Notchling — агенты Claude Code и Codex в чёлке MacBook</title>
+<meta name="description" content="Пульт управления Claude Code и Codex в вырезе MacBook.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/mac.css">
+<style>
+:root{--bg:#05060c;--fg:#f4f5fb;--mut:#9aa0b8;--line:rgba(255,255,255,.1);--mint:#8fe3c5;--blue:#6ea4f5;--amber:#f0c556}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.55 -apple-system,"SF Pro Display",Inter,system-ui,sans-serif;overflow-x:hidden}
+canvas#sky{position:fixed;inset:0;z-index:0;pointer-events:none}
+.aur{position:absolute;inset:-10% -10% auto;height:70vh;z-index:0;pointer-events:none;filter:blur(70px);opacity:.55;background:radial-gradient(40% 50% at 25% 40%,rgba(110,164,245,.5),transparent 70%),radial-gradient(35% 45% at 70% 30%,rgba(143,227,197,.45),transparent 70%),radial-gradient(30% 40% at 50% 70%,rgba(167,139,250,.35),transparent 70%);animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(4%,6%,0) scale(1.08)}}
+nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:16px 24px;backdrop-filter:blur(14px)}
+nav b{font-size:17px;letter-spacing:.2px}nav .r{display:flex;gap:14px;align-items:center;font-size:14px;color:var(--mut)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;background:#fff;color:#0a0b12;font-weight:650;font-size:16px;text-decoration:none;box-shadow:0 10px 40px -8px rgba(143,227,197,.6);transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}.btn.sm{padding:8px 16px;font-size:14px}
+main{position:relative;z-index:1}
+.hero{position:relative;text-align:center;padding:70px 24px 40px;max-width:1000px;margin:0 auto}
+.eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:14px}
+h1{font-size:clamp(40px,7vw,84px);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px;font-weight:700;background:linear-gradient(180deg,#fff,#aeb4d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:620px;margin:0 auto 28px;color:var(--mut);font-size:clamp(17px,2vw,21px)}
+.fine{font-size:13px;color:#6f7590;margin-top:14px}
+.demo{margin:56px auto 0;padding:0 20px 70px;max-width:980px}
+.reveal-text{max-width:900px;margin:40px auto;padding:60px 24px;font-size:clamp(26px,4.2vw,50px);line-height:1.2;font-weight:650;letter-spacing:-.02em}
+.reveal-text span{opacity:.18;transition:opacity .4s}.reveal-text span.on{opacity:1}
+.story{display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:center;max-width:1180px;margin:0 auto;padding:90px 24px}
+.story.rev{grid-template-columns:1.25fr 1fr}.story.rev .txt{order:2}
+.story h2{font-size:clamp(30px,4vw,52px);line-height:1.05;letter-spacing:-.025em;margin:0 0 16px}
+.story p{color:var(--mut);margin:0 0 12px}
+.tag{display:inline-block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1100px;margin:0 auto;padding:60px 24px}
+.card{padding:26px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);backdrop-filter:blur(8px);transition:transform .3s,border-color .3s}
+.card:hover{transform:translateY(-4px);border-color:rgba(143,227,197,.4)}
+.card h3{margin:0 0 8px;font-size:19px}.card p{margin:0;color:var(--mut);font-size:15px}.card .ic{font-size:26px;margin-bottom:12px}
+.card.big{grid-column:span 2}
+.get{max-width:760px;margin:60px auto 0;padding:60px 24px 100px;text-align:center}
+.get h2{font-size:clamp(32px,5vw,60px);margin:0 0 12px;letter-spacing:-.03em}
+.logo{width:92px;height:62px;margin:0 auto 22px;background:#000;border-radius:0 0 28px 28px;display:flex;gap:14px;justify-content:center;align-items:center;box-shadow:0 20px 70px -10px rgba(110,164,245,.7)}
+.logo i{width:9px;height:12px;border-radius:50%;background:#fff;animation:blink 4.5s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+details{border-top:1px solid var(--line);padding:16px 0;text-align:left}summary{cursor:pointer;font-weight:600}details p{color:var(--mut);margin:10px 0 0}
+footer{text-align:center;color:#555b75;font-size:13px;padding:30px}
+.fadein{opacity:0;transform:translateY(24px);transition:all .8s cubic-bezier(.2,.8,.2,1)}.fadein.on{opacity:1;transform:none}
+@media(max-width:860px){.story,.story.rev{grid-template-columns:1fr}.story.rev .txt{order:0}.bento{grid-template-columns:1fr}.card.big{grid-column:auto}}
+
+.hint{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;color:var(--mut);font-size:14px}.hint i{width:8px;height:8px;border-radius:50%;background:var(--mint);animation:ping 1.6s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(143,227,197,.6)}100%{box-shadow:0 0 0 12px rgba(143,227,197,0)}}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}.lang button{background:none;border:0;color:var(--mut);font:600 12px inherit;padding:6px 10px;cursor:pointer}.lang button[aria-pressed=true]{background:rgba(255,255,255,.14);color:#fff}
+.card img{width:100%;border-radius:14px;margin-top:16px;display:block;box-shadow:0 14px 30px -14px rgba(0,0,0,.7)}
+.office{display:flex;gap:8px;margin-top:18px}.pix{width:34px;height:40px;border-radius:6px;background:#8a5a3c;position:relative;animation:bob 1.2s steps(2) infinite}.pix::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18px;background:#8fe3c5;border-radius:0 0 6px 6px}.pix:nth-child(2n){background:#c79a72;animation-delay:.3s}.pix:nth-child(3n)::after{background:#f5c56a}@keyframes bob{50%{transform:translateY(-3px)}}
+.priv{max-width:900px;margin:0 auto;padding:40px 24px}.priv h2{font-size:clamp(28px,4vw,46px);letter-spacing:-.025em;margin:0 0 14px}.priv ul{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px}.priv li{padding:14px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}
+.priv pre{background:#0d0f18;border:1px solid var(--line);border-radius:16px;padding:16px;overflow:auto;font-size:13px;color:#cfd6ff}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0 0;text-align:left}.steps3 div{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}.steps3 b{display:block;margin-bottom:6px}.steps3 span{color:var(--mut);font-size:15px}
+@media(max-width:860px){.steps3{grid-template-columns:1fr}}
+.inst{max-width:620px;margin:6px auto 0;padding:22px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.04);text-align:left}
+.inst-h{font-weight:650;margin-bottom:12px}
+.cmd{display:flex;gap:10px;align-items:center;background:#0d0f18;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.cmd code{flex:1;overflow-x:auto;white-space:nowrap;font:13.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:#cfd6ff}
+.cmd button{border:0;border-radius:8px;padding:7px 12px;background:var(--mint);color:#0d2e24;font-weight:700;cursor:pointer}
+.or{margin:22px 0 16px;color:var(--mut);font-size:14px}
+</style></head><body>
+<canvas id="sky"></canvas>
+<nav><b>● Notchling</b><div class="r"><span class="lang" role="group" aria-label="Language"><button data-lang="ru" aria-pressed="true">RU</button><button data-lang="en" aria-pressed="false">EN</button></span><a class="btn sm" href="Notchling.zip" download data-i="nav.dl"></a></div></nav>
+<main>
+<div class="aur"></div>
+<header class="hero">
+  <div class="eyebrow" data-i="hero.eyebrow"></div>
+  <h1 data-i="hero.h1"></h1>
+  <p class="lead" data-i="hero.lead"></p>
+  <a class="btn" href="Notchling.zip" download><span data-i="cta"></span></a>
+  <div class="fine" data-i="hero.fine"></div>
+</header>
+<div class="demo"><div data-mac data-mode="hybrid"></div><div class="hint"><i></i><span data-i="hero.hint"></span></div></div>
+
+<div class="reveal-text" id="rt" data-i="reveal"></div>
+
+<section class="story fadein"><div class="txt"><span class="tag" data-i="s1.tag"></span><h2 data-i="s1.h"></h2><p data-i="s1.p1"></p><p data-i="s1.p2"></p></div><div data-mac data-mode="still" data-tab="0"></div></section>
+<section class="story rev fadein"><div class="txt"><span class="tag" data-i="s2.tag"></span><h2 data-i="s2.h"></h2><p data-i="s2.p1"></p><p data-i="s2.p2"></p></div><div data-mac data-mode="still" data-tab="1"></div></section>
+<section class="story fadein"><div class="txt"><span class="tag" data-i="s3.tag"></span><h2 data-i="s3.h"></h2><p data-i="s3.p1"></p></div><div data-mac data-mode="still" data-tab="2"></div></section>
+<section class="story rev fadein"><div class="txt"><span class="tag" data-i="s4.tag"></span><h2 data-i="s4.h"></h2><p data-i="s4.p1"></p></div><div data-mac data-mode="still" data-tab="3"></div></section>
+
+<section class="bento">
+  <div class="card big fadein"><div class="ic">💬</div><h3 data-i="b1.t"></h3><p data-i="b1.d"></p><img src="assets/shot-sessions.png" alt=""></div>
+  <div class="card fadein"><div class="ic">📊</div><h3 data-i="b2.t"></h3><p data-i="b2.d"></p></div>
+  <div class="card fadein"><div class="ic">🌿</div><h3 data-i="b3.t"></h3><p data-i="b3.d"></p></div>
+  <div class="card fadein"><div class="ic">🎙️</div><h3 data-i="b4.t"></h3><p data-i="b4.d"></p></div>
+  <div class="card fadein"><div class="ic">👾</div><h3 data-i="b5.t"></h3><p data-i="b5.d"></p><div class="office"><i class="pix"></i><i class="pix"></i><i class="pix"></i><i class="pix"></i></div></div>
+  <div class="card fadein"><div class="ic">🖥️</div><h3 data-i="b6.t"></h3><p data-i="b6.d"></p></div>
+</section>
+
+<section class="priv fadein" id="privacy"><h2 data-i="pv.h"></h2><p style="color:var(--mut)" data-i="pv.sub"></p>
+<ul><li data-i="pv.l1"></li><li data-i="pv.l2"></li><li data-i="pv.l3"></li></ul>
+<p style="color:var(--mut)" data-i="pv.hooks"></p>
+<pre><code>"Stop": [{ "hooks": [{
+  "type": "command",
+  "command": "\"/Users/NAME/Library/Application Support/Notchling/notchling-hook.pl\"",
+  "timeout": 5, "async": true
+}] }]</code></pre></section>
+
+<section class="get" id="get"><div class="logo"><i></i><i></i></div><h2 data-i="get.h"></h2><p class="lead" data-i="get.sub"></p>
+<div class="inst"><div class="inst-h" data-i="in.h"></div>
+<div class="cmd"><code id="cmd">curl -fsSL https://…/ins | bash</code><button id="copy" data-i="in.copy"></button></div>
+<div class="fine" data-i="in.fine"></div></div>
+<div class="or" data-i="in.or"></div>
+<a class="btn" href="Notchling.zip" download><span data-i="cta"></span></a><div class="fine" data-i="get.fine"></div>
+<div class="steps3"><div><b data-i="g1.t"></b><span data-i="g1.d"></span></div><div><b data-i="g2.t"></b><span data-i="g2.d"></span></div><div><b data-i="g3.t"></b><span data-i="g3.d"></span></div></div>
+<div style="margin-top:50px"><details><summary data-i="q1"></summary><p data-i="a1"></p></details><details><summary data-i="q2"></summary><p data-i="a2"></p></details><details><summary data-i="q3"></summary><p data-i="a3"></p></details><details><summary data-i="q4"></summary><p data-i="a4"></p></details></div></section>
+<footer>© 2026 Notchling</footer>
+</main>
+<script src="assets/mac.js"></script>
+<script src="assets/home.js"></script>
+</body></html>
